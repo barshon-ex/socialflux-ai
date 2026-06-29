@@ -1,19 +1,10 @@
-from fastapi import FastAPI
+from news.news_collector import get_latest_news
 
-app = FastAPI(
-    title="SocialFlux AI",
-    version="1.0.0"
-)
+news = get_latest_news()
 
-@app.get("/")
-def home():
-    return {
-        "project": "SocialFlux AI",
-        "status": "Running"
-    }
+print("=" * 60)
 
-@app.get("/health")
-def health():
-    return {
-        "status": "ok"
-    }
+for article in news:
+    print(article["title"])
+    print(article["link"])
+    print("-" * 60)
