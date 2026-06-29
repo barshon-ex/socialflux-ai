@@ -16,7 +16,9 @@ def ask_gemini(prompt):
     last_error = None
 
     for model in MODELS:
+
         for attempt in range(5):
+
             try:
 
                 response = client.models.generate_content(
@@ -31,7 +33,7 @@ def ask_gemini(prompt):
 
                 last_error = e
 
-                print(f"{model} Attempt {attempt+1} Failed: {e}")
+                print(f"{model} Attempt {attempt+1}: {e}")
 
                 time.sleep((attempt + 1) * 5)
 
@@ -41,57 +43,54 @@ def ask_gemini(prompt):
 def generate_title(title, summary):
 
     prompt = f"""
-You are an SEO Expert.
-
-Create ONE professional blog title.
+Create ONE professional SEO blog title.
 
 Rules:
 
 - Maximum 60 characters
 - Remove author names
+- Remove website names
 - Remove @username
 - Remove "via"
-- Remove website names
-- Do NOT copy the original title
-- Make it click-worthy
+- Click-worthy
 - English only
 
 News Title:
 {title}
 
-News Summary:
+Summary:
 {summary}
 
-Return ONLY the title.
+Return only the title.
 """
 
     return ask_gemini(prompt)
 
 
-def write_article(title, summary):
+def get_prompt(category, title, summary):
 
-    prompt = f"""
-You are a Senior Digital Marketing Trainer at SocialFlux Pro.
+    return f"""
+You are a Senior Digital Marketing Trainer.
 
-Write a high-quality professional blog article in natural Bangladeshi Bangla.
+Category:
+{category}
 
-Rules:
+Write a premium blog article.
 
-- Never mention AI
-- Never mention ChatGPT
-- Never mention Gemini
-- Never mention "আমি"
-- Never mention "নিশ্চয়ই"
-- Never mention "এই খবরের ভিত্তিতে"
-- Human tone only
-
-Blog Title:
+Title:
 {title}
 
-News Summary:
+Summary:
 {summary}
 
-Return HTML only.
+Requirements:
+
+- Natural Bangladeshi Bangla
+- Human writing style
+- SEO Friendly
+- No AI tone
+- No repetition
+- HTML Only
 
 Structure:
 
@@ -99,34 +98,40 @@ Structure:
 
 <h2>আজকের আপডেট</h2>
 
-<h2>কেন এটি গুরুত্বপূর্ণ?</h2>
+<h2>মূল পরিবর্তন</h2>
 
-<h2>ডিজিটাল মার্কেটারদের কী করা উচিত?</h2>
+<h2>এটি কেন গুরুত্বপূর্ণ?</h2>
 
-<h2>মূল বিষয়গুলো</h2>
+<h2>ডিজিটাল মার্কেটারদের করণীয়</h2>
+
+<h2>মূল বিষয়</h2>
 
 <ul>
-<li>5 important points</li>
+<li>5 Key Points</li>
 </ul>
 
-<h2>সাধারণ প্রশ্ন</h2>
+<h2>FAQ</h2>
 
-3 Questions with Answers
+3 Questions & Answers
 
 <h2>শেষ কথা</h2>
 
-Finish with:
+শেষে লিখবে:
 
-<p><strong>প্রতিদিনের Digital Marketing Update পেতে SocialFlux Pro অনুসরণ করুন।</strong></p>
+<p><strong>SocialFlux Pro-এ প্রতিদিন Digital Marketing Update প্রকাশিত হয়।</strong></p>
 
-Requirements:
+700-900 words
 
-- 700-900 words
-- SEO Friendly
-- Human Written
-- Professional
-- No Markdown
-- HTML only
+HTML only.
 """
+
+
+def write_article(category, title, summary):
+
+    prompt = get_prompt(
+        category,
+        title,
+        summary
+    )
 
     return ask_gemini(prompt)
