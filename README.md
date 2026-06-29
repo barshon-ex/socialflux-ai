@@ -1,5 +1,4 @@
-# socialflux-ai
-AI-powered WordPress automation for SocialFluxPro
+
 # SocialFlux AI
 
 An AI-powered automation system that collects the latest digital marketing news, rewrites it in simple language, and publishes it automatically to a WordPress website using the WordPress REST API.
