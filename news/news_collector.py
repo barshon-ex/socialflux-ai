@@ -1,32 +1,27 @@
 import re
 import feedparser
 
-NEWS_FEEDS = [
-    "https://www.searchenginejournal.com/feed/",
-    "https://searchengineland.com/feed",
-    "https://blog.hubspot.com/marketing/rss.xml",
-]
+from news.rss_sources import (
+    AI_TOOLS_FEEDS,
+    SOFTWARE_FEEDS,
+    ADOBE_FEEDS,
+    SOCIAL_MEDIA_FEEDS,
+    PRODUCTIVITY_FEEDS,
+)
 
 
 def clean_title(title):
-    """Clean RSS title."""
     if not title:
         return ""
 
-    # Remove 'via @username'
     title = re.sub(r"\s+via\s+@[\w_]+", "", title, flags=re.IGNORECASE)
-
-    # Remove any @username
     title = re.sub(r"@[\w_]+", "", title)
-
-    # Normalize spaces
     title = re.sub(r"\s+", " ", title)
 
     return title.strip()
 
 
 def clean_summary(summary):
-    """Remove HTML tags from summary."""
     if not summary:
         return ""
 
@@ -36,12 +31,15 @@ def clean_summary(summary):
     return summary.strip()
 
 
-def get_latest_news(limit=10):
-    articles = []
-    seen_links = set()
+def fetch_category_news(category_name, feeds, limit=1):
 
-    for feed_url in NEWS_FEEDS:
+    articles = []
+    seen = set()
+
+    for feed_url in feeds:
+
         try:
+
             feed = feedparser.parse(feed_url)
 
             for item in feed.entries:
@@ -52,31 +50,83 @@ def get_latest_news(limit=10):
                 if not title or not link:
                     continue
 
-                if link in seen_links:
+                if link in seen:
                     continue
 
-                seen_links.add(link)
+                seen.add(link)
 
                 articles.append({
+                    "category": category_name,
                     "title": title,
                     "link": link,
-                    "summary": clean_summary(item.get("summary", "")),
+                    "summary": clean_summary(
+                        item.get("summary", "")
+                    )
                 })
 
                 if len(articles) >= limit:
                     return articles
 
         except Exception as e:
-            print(f"Feed Error ({feed_url}): {e}")
+            print(f"{category_name}: {e}")
+
+    return articles
+
+
+def get_latest_news():
+
+    articles = []
+
+    articles.extend(
+        fetch_category_news(
+            "AI Tools",
+            AI_TOOLS_FEEDS
+        )
+    )
+
+    articles.extend(
+        fetch_category_news(
+            "Software",
+            SOFTWARE_FEEDS
+        )
+    )
+
+    articles.extend(
+        fetch_category_news(
+            "Adobe",
+            ADOBE_FEEDS
+        )
+    )
+
+    articles.extend(
+        fetch_category_news(
+            "Social Media",
+            SOCIAL_MEDIA_FEEDS
+        )
+    )
+
+    articles.extend(
+        fetch_category_news(
+            "Productivity",
+            PRODUCTIVITY_FEEDS
+        )
+    )
 
     return articles
 
 
 if __name__ == "__main__":
+
     news = get_latest_news()
 
     for article in news:
+
         print("=" * 80)
+
+        print(article["category"])
+
         print(article["title"])
+
         print(article["link"])
-        print(article["summary"][:200])
+
+        print()
