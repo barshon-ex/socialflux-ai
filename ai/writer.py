@@ -1,14 +1,14 @@
-from openai import OpenAI
-from config.settings import OPENAI_API_KEY
+from google import genai
+from config.settings import GEMINI_API_KEY
 
-client = OpenAI(api_key=OPENAI_API_KEY)
+client = genai.Client(api_key=GEMINI_API_KEY)
 
 def write_article(title, summary):
 
     prompt = f"""
-You are an expert Digital Marketing trainer.
+তুমি একজন Professional Digital Marketing Trainer।
 
-Write a fresh Bangla article for students.
+নিচের নিউজ থেকে সহজ বাংলায় ৫০০-৭০০ শব্দের SEO Friendly Article লিখো।
 
 Title:
 {title}
@@ -16,22 +16,24 @@ Title:
 Summary:
 {summary}
 
-Rules:
-- 500-700 words
-- Simple Bangla
-- SEO Friendly
-- Add headings
-- Finish with a conclusion.
+Article Format:
+
+# আকর্ষণীয় শিরোনাম
+
+## আপডেট কী?
+
+## কেন গুরুত্বপূর্ণ?
+
+## আমাদের কী করা উচিত?
+
+## উপসংহার
+
+বাংলাদেশের স্টুডেন্টদের বুঝতে সহজ হবে এমন ভাষা ব্যবহার করবে।
 """
 
-    response = client.chat.completions.create(
-        model="gpt-4.1-mini",
-        messages=[
-            {
-                "role":"user",
-                "content":prompt
-            }
-        ]
+    response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=prompt,
     )
 
-    return response.choices[0].message.content
+    return response.text
