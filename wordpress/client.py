@@ -16,9 +16,9 @@ class WordPressClient:
         credentials = f"{WORDPRESS_USERNAME}:{WORDPRESS_APPLICATION_PASSWORD}"
         token = base64.b64encode(credentials.encode()).decode()
 
-        self.headers = {
+        self.auth_header = {
             "Authorization": f"Basic {token}",
-            "Content-Type": "application/json",
+            "Accept": "application/json",
         }
 
         self.api = f"{WORDPRESS_URL}/wp-json/wp/v2/posts"
@@ -34,13 +34,16 @@ class WordPressClient:
         try:
             response = requests.get(
                 self.api,
-                headers=self.headers,
+                headers=self.auth_header,
                 params={
                     "search": title,
                     "per_page": 10,
                 },
                 timeout=30,
             )
+
+            print(response.status_code)
+            print(response.text)
 
             response.raise_for_status()
 
@@ -67,14 +70,10 @@ class WordPressClient:
     ):
 
         if self.post_exists(title):
-            print("Duplicate article found.")
-            return {
-                "link": "Duplicate Skipped"
-            }
+            return {"link": "Duplicate"}
 
         payload = {
             "title": title,
-            "slug": self.slugify(title),
             "content": content,
             "status": POST_STATUS,
         }
@@ -87,10 +86,16 @@ class WordPressClient:
 
         response = requests.post(
             self.api,
-            headers=self.headers,
+            auth=(WORDPRESS_USERNAME, WORDPRESS_APPLICATION_PASSWORD),
+            headers={
+                "Accept": "application/json",
+            },
             json=payload,
             timeout=60,
         )
+
+        print(response.status_code)
+        print(response.text)
 
         response.raise_for_status()
 
