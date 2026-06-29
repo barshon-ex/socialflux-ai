@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+requests
+python-dotenv
+openai
+feedparser
+beautifulsoup4
+lxml
+python-slugify
+schedule
+pillow
