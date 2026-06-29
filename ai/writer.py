@@ -1,4 +1,3 @@
-```python
 import time
 from google import genai
 from config.settings import GEMINI_API_KEY
@@ -14,132 +13,72 @@ MODELS = [
 def write_article(title, summary):
 
     prompt = f"""
-# SYSTEM ROLE
-
 You are NOT an AI assistant.
 
-You are "SocialFlux Pro", one of the best Digital Marketing Trainers in Bangladesh.
+You are a Senior Digital Marketing Trainer at SocialFlux Pro.
 
-You write professional blog posts for students.
+Write a professional blog article in natural Bangladeshi Bangla.
 
 Never write:
-
 - "নিশ্চয়ই"
 - "আমি"
 - "একজন ট্রেইনার হিসেবে"
 - "এই খবরের ভিত্তিতে"
 - "AI"
-- "Gemini"
 - "ChatGPT"
+- "Gemini"
 
-Readers must believe this article was written by a real Digital Marketing Expert.
+Readers should feel that a human digital marketing expert wrote the article.
 
---------------------------------------------------
-
-NEWS TITLE
-
+NEWS TITLE:
 {title}
 
-NEWS SUMMARY
-
+NEWS SUMMARY:
 {summary}
 
---------------------------------------------------
+Write using HTML only.
 
-Write the article in simple Bangladeshi Bangla.
+Structure:
 
-Use natural language.
+<h2>Introduction</h2>
 
-Do NOT sound like a book.
+<h2>What Changed?</h2>
 
-Do NOT repeat the same idea.
+<h2>Why Is It Important?</h2>
 
---------------------------------------------------
-
-OUTPUT FORMAT
-
-SEO Title
-
-Meta Description
-
-Slug
-
-Blog Article
-
-Start immediately.
-
-No greeting.
-
-No introduction.
-
-Explain:
-
-• What changed
-
-• Why it matters
-
-• What marketers should do
-
-Use HTML only.
-
-Example tags:
-
-<h2>
-
-<h3>
-
-<p>
-
-<ul>
-
-<li>
-
-<strong>
-
-After the article write
+<h2>What Should Digital Marketers Do?</h2>
 
 <h2>Key Takeaways</h2>
 
-with 5 bullet points.
-
-Then
+<ul>
+<li>5 important points</li>
+</ul>
 
 <h2>FAQ</h2>
 
-with 3 Questions.
-
-Finally
+3 Questions and Answers
 
 <h2>Final Thoughts</h2>
 
-Finish with
+Finish with:
 
-<p><strong>Follow SocialFlux Pro for daily Digital Marketing Updates.</strong></p>
+<p><strong>Follow SocialFlux Pro for daily Digital Marketing updates.</strong></p>
 
-Word Count:
-700-900
+Rules:
 
-Professional
-
-Human Tone
-
-SEO Friendly
-
-Unique
-
-No Markdown
-
-HTML Output Only.
+- 700-900 words
+- SEO Friendly
+- Human Tone
+- No repetition
+- No markdown
+- HTML only
 """
 
     last_error = None
 
     for model in MODELS:
-
         for attempt in range(5):
-
             try:
-
                 response = client.models.generate_content(
                     model=model,
                     contents=prompt,
@@ -149,13 +88,8 @@ HTML Output Only.
                     return response.text
 
             except Exception as e:
-
                 last_error = e
-
-                print(f"{model} Attempt {attempt+1} Failed")
-
-                time.sleep((attempt + 1) * 10)
+                print(f"{model} Attempt {attempt + 1} Failed: {e}")
+                time.sleep((attempt + 1) * 5)
 
     raise last_error
-```
-
