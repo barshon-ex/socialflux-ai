@@ -1,10 +1,9 @@
-```python
 from news.news_collector import get_latest_news
 from ai.writer import write_article
 from wordpress.client import WordPressClient
 
 print("=" * 60)
-print("🚀 SocialFlux AI Publisher Started")
+print("SocialFlux AI Publisher Started")
 print("=" * 60)
 
 wp = WordPressClient()
@@ -17,8 +16,8 @@ try:
 
     article = news[0]
 
-    print(f"📰 {article['title']}")
-    print("✍️ Generating article with AI...")
+    print(f"News: {article['title']}")
+    print("Generating article...")
 
     content = write_article(
         article["title"],
@@ -26,21 +25,18 @@ try:
     )
 
     if not content or len(content.strip()) < 200:
-        raise Exception("AI returned empty or very short content.")
+        raise Exception("AI returned empty content.")
 
-    print("✅ Article generated.")
-
-    print("🚀 Publishing to WordPress...")
+    print("Publishing to WordPress...")
 
     result = wp.create_post(
         title=article["title"],
         content=content
     )
 
-    print("✅ Published Successfully")
-    print(f"🔗 {result.get('link', 'No Link')}")
+    print("Published Successfully")
+    print(result.get("link", ""))
 
 except Exception as e:
-    print(f"❌ ERROR: {e}")
+    print(e)
     raise
-```
