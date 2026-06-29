@@ -1,11 +1,5 @@
-fastapi
-uvicorn
+feedparser
 requests
+beautifulsoup4
 python-dotenv
 openai
-feedparser
-beautifulsoup4
-lxml
-python-slugify
-schedule
-pillow
