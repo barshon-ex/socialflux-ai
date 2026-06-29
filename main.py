@@ -9,16 +9,18 @@ print("=" * 60)
 wp = WordPressClient()
 
 try:
-    news = get_latest_news(limit=1)
 
-    if not news:
-        raise Exception("No news found.")
+```
+news_list = get_latest_news()
 
-    article = news[0]
+if not news_list:
+    raise Exception("No news found.")
 
-    print(f"News: {article['title']}")
+for article in news_list:
 
-    print("Generating SEO title...")
+    print("=" * 60)
+    print(f"Category : {article['category']}")
+    print(f"News     : {article['title']}")
 
     seo_title = generate_title(
         article["title"],
@@ -27,28 +29,28 @@ try:
 
     print(f"SEO Title: {seo_title}")
 
-    print("Generating article...")
-
     content = write_article(
+        article["category"],
         seo_title,
         article["summary"]
     )
 
     if not content or len(content.strip()) < 200:
-        raise Exception("AI returned empty content.")
-
-    print("Publishing to WordPress...")
+        print("Article generation failed. Skipping...")
+        continue
 
     result = wp.create_post(
         title=seo_title,
         content=content
     )
 
-    print("=" * 60)
-    print("Published Successfully")
-    print(result.get("link", ""))
-    print("=" * 60)
+    print(f"Published: {result.get('link', '')}")
+
+print("=" * 60)
+print("All categories completed.")
+print("=" * 60)
+```
 
 except Exception as e:
-    print(e)
-    raise
+print(e)
+raise
