@@ -1,3 +1,21 @@
+from news.news_collector import get_latest_news
+from ai.writer import write_article, generate_title
+from wordpress.client import WordPressClient
+
+CATEGORY_MAP = {
+    "AI Tools": 4,
+    "Software": 5,
+    "Adobe": 6,
+    "Productivity": 7,
+    "Social Media": 9,
+}
+
+print("=" * 60)
+print("SocialFlux AI Publisher Started")
+print("=" * 60)
+
+wp = WordPressClient()
+
 try:
     news_list = get_latest_news()
 
@@ -42,5 +60,5 @@ try:
     print("=" * 60)
 
 except Exception as e:
-    print(e)
+    print(f"Error: {e}")
     raise
