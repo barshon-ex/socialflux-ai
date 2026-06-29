@@ -79,8 +79,8 @@ def create_post(
         "status": POST_STATUS,
     }
 
-    if category:
-        payload["categories"] = category
+    if category is not None:
+        payload["categories"] = [category]
 
     if tags:
         payload["tags"] = tags
