@@ -7,6 +7,9 @@ load_dotenv()
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
+# Telegram
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+
 # WordPress
 WORDPRESS_URL = os.getenv("WORDPRESS_URL")
 WORDPRESS_USERNAME = os.getenv("WORDPRESS_USERNAME")
